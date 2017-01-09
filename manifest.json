@@ -1,0 +1,21 @@
+{
+  "manifest_version": 2,
+  "name": "Tab Sessions",
+  "version": "1.0",
+
+  "description": "Saves a tab session to use for later",
+  "icons": {
+    "48": "icons/tab-sessions-48.png"
+  },
+
+  "permissions": [
+    "tabs",
+    "storage"
+  ],
+
+  "browser_action": {
+    "default_icon": "icons/tab-sessions-48.png",
+    "default_title": "Tab Sessions",
+    "default_popup": "popup/choose_tab_session.html"
+  }
+}
