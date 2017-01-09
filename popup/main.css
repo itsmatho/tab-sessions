@@ -1,0 +1,16 @@
+.header {
+}
+
+.save {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.session {
+  margin: 10px;
+}
+
+.start {
+  margin-right: 5px;
+}
