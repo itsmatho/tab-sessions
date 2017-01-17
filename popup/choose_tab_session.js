@@ -91,11 +91,9 @@ function displaySessionOption(session_name, session) {
 
   var session_header_container = document.createElement('div');
   session_header_container.setAttribute('class', 'header-container');
-
   session_header_container.appendChild(session_header);
 
-  var session_header_edit_btn_container = document.createElement('div');
-  session_header_edit_btn_container.setAttribute('class', 'edit-btn-container');
+  session_option.appendChild(session_header_container);
 
   var session_header_edit_btn = document.createElement('button');
   session_header_edit_btn.setAttribute('class', 'header-edit');
@@ -105,7 +103,11 @@ function displaySessionOption(session_name, session) {
   session_header_canceledit_btn.setAttribute('class', 'header-edit-cancel');
   session_header_canceledit_btn.textContent = "Cancel";
 
+  var session_header_edit_btn_container = document.createElement('div');
+  session_header_edit_btn_container.setAttribute('class', 'edit-btn-container');
   session_header_edit_btn_container.appendChild(session_header_edit_btn);
+
+  session_option.appendChild(session_header_edit_btn_container);
 
   // Event listener for editing the session name
   session_header_edit_btn.addEventListener('click', () => {
@@ -131,6 +133,8 @@ function displaySessionOption(session_name, session) {
       }
 
       editing = !editing;
+
+      // Remove error message if displayed
       if(header_error_element.parentNode)
         header_error_element.parentNode.removeChild(header_error_element);
     }
@@ -141,14 +145,13 @@ function displaySessionOption(session_name, session) {
   start_btn.textContent = 'Start session';
   start_btn.setAttribute('class', 'start');
 
+  session_option.appendChild(start_btn);
+
   var delete_btn = document.createElement('button');
   delete_btn.addEventListener('click', () => {deleteSession(session_name);});
   delete_btn.textContent = 'Delete session';
   delete_btn.setAttribute('class', 'delete');
 
-  session_option.appendChild(session_header_container);
-  session_option.appendChild(session_header_edit_btn_container);
-  session_option.appendChild(start_btn);
   session_option.appendChild(delete_btn);
 
   sessions_list.appendChild(session_option);
