@@ -3,9 +3,9 @@
   "name": "Tab Sessions",
   "version": "1.0",
 
-  "description": "Saves a tab session to use for later",
+  "description": "Saves any number of tab sessions to use for later. Just open the menu, press \"Save Current Session\" and it saves the session on your current window!",
   "icons": {
-    "48": "icons/tab-sessions-48.png"
+    "96": "icons/tab-sessions-96.png"
   },
 
   "permissions": [
