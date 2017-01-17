@@ -47,7 +47,6 @@ function fetchSavedSessions() {
 
     session_count = Object.keys(sessions).length;
     storeSavedSessions(sessions);
-    console.log("Count: " + session_count);
   }, onError);
 }
 
@@ -57,8 +56,6 @@ function startSession(session) {
     console.log("Error: session to start does not exist");
     return;
   }
-  console.log("Starting...");
-  console.log(session);
 
   browser.windows.create({url: session});
 }
@@ -85,14 +82,20 @@ function displaySessionOption(session_name, session) {
   session_option.setAttribute('class', 'session');
 
   var header_error_element = document.createElement('div');
-  header_error_element.setAttribute('class', 'error');
+  header_error_element.setAttribute('class', 'edit-error');
+  header_error_element.textContent = "The session name already exists! Please use another name.";
 
   var session_header = document.createElement('div');
   session_header.setAttribute('class', 'header');
   session_header.textContent = session_name;
 
+  var session_header_container = document.createElement('div');
+  session_header_container.setAttribute('class', 'header-container');
+
+  session_header_container.appendChild(session_header);
+
   var session_header_edit_btn_container = document.createElement('div');
-  session_header_edit_btn_container.setAttribute('class', 'btn-container');
+  session_header_edit_btn_container.setAttribute('class', 'edit-btn-container');
 
   var session_header_edit_btn = document.createElement('button');
   session_header_edit_btn.setAttribute('class', 'header-edit');
@@ -103,16 +106,13 @@ function displaySessionOption(session_name, session) {
   session_header_canceledit_btn.textContent = "Cancel";
 
   session_header_edit_btn_container.appendChild(session_header_edit_btn);
-  session_header_edit_btn_container.appendChild(header_error_element);
 
+  // Event listener for editing the session name
   session_header_edit_btn.addEventListener('click', () => {
-    console.log('click');
     // Make sure that the new name for the session doesn't already exist
     if(editing && session_header.textContent !== session_name && saved_sessions[session_header.textContent]) {
-      header_error_element.textContent = "The session name already exists! Please use another name.";
-      console.log('already exists');
+      session_header_container.appendChild(header_error_element);
     } else {
-      console.log('editing...');
       session_header.contentEditable = !session_header.isContentEditable;
       session_header_edit_btn.textContent = session_header.isContentEditable ? "Done" : "Edit";
 
@@ -130,11 +130,10 @@ function displaySessionOption(session_name, session) {
         });
       }
 
-      console.log('editing status: ' + editing);
       editing = !editing;
-      console.log('editing changed: ' + editing);
+      if(header_error_element.parentNode)
+        header_error_element.parentNode.removeChild(header_error_element);
     }
-    console.log('Editable status: ' + session_header.isContentEditable);
   });
 
   var start_btn = document.createElement('button');
@@ -147,15 +146,8 @@ function displaySessionOption(session_name, session) {
   delete_btn.textContent = 'Delete session';
   delete_btn.setAttribute('class', 'delete');
 
-  console.log("session displayed");
-  console.log(session);
-
-  var session_separator = document.createElement('div');
-  session_separator.setAttribute('class', 'panel-section-separator');
-  
-  session_option.appendChild(session_separator);
-  session_option.appendChild(session_header);
-  session_option.appendChild(session_header_edit_btn);
+  session_option.appendChild(session_header_container);
+  session_option.appendChild(session_header_edit_btn_container);
   session_option.appendChild(start_btn);
   session_option.appendChild(delete_btn);
 
@@ -174,7 +166,6 @@ function saveCurrentSession() {
     return;
   }
 
-
   session_count++;
 
   // Give default session name for current session by linear probing
@@ -182,7 +173,6 @@ function saveCurrentSession() {
   var name = 'Session ';
   while(saved_sessions[name + session_number]) session_number++;
   name += session_number;
-  console.log("Number: " + session_number);
 
   if(!saved_sessions[name])
     displaySessionOption(name, curr_session);
@@ -195,7 +185,5 @@ function saveCurrentSession() {
 }
 
 // Asynchronous fetches
-console.log('fetching current window sesh');
 fetchCurrentSession();
-console.log('fetching all window seshes');
 fetchSavedSessions();
