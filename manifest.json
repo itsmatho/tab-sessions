@@ -14,7 +14,7 @@
   ],
 
   "browser_action": {
-    "default_icon": "icons/tab-sessions-48.png",
+    "default_icon": "icons/tab-sessions-96.png",
     "default_title": "Tab Sessions",
     "default_popup": "popup/choose_tab_session.html"
   }
