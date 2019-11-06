@@ -1,4 +1,4 @@
-var curr_session, saved_sessions;
+var curr_session, saved_sessions, current_window;
 var session_count = 0;
 var editing = false;
 
@@ -17,7 +17,10 @@ function onError(error) {
 /* Store tab urls of current window */
 function storeCurrentSession(session_window) {
   // Get array of urls
-  curr_session = session_window.tabs.map( (tab) => {return tab.url;});
+  current_window = session_window
+  curr_session = session_window.tabs.map( (tab) => {
+    return {url: tab.url, pinned: tab.pinned, active: tab.active};
+  });
 }
 
 /* Fetch current window into store */
@@ -50,6 +53,18 @@ function fetchSavedSessions() {
   }, onError);
 }
 
+function openSessionInWindow(session, windowId) {
+  console.log("opening session for window:", windowId)
+  session.forEach((item) => {
+    browser.tabs.create({
+      windowId: windowId,
+      active:   item.active,
+      url:      item.url,
+      pinned:   item.pinned
+    })
+  })
+}
+
 /* Start input session in a new window */
 function startSession(session) {
   if(!session) {
@@ -57,7 +72,27 @@ function startSession(session) {
     return;
   }
 
-  browser.windows.create({url: session});
+  if(current_window.tabs.length === 1) {
+    openSessionInWindow(session, undefined)
+    return
+  }
+
+  // old seession format
+  let sessionType = typeof session[0]
+  console.log("sess type:", sessionType)
+  if(sessionType === 'string') {
+    browser.windows.create({url: session}).catch(onError);
+  } else if (sessionType === 'object') {
+    function onCreated(windowInfo) {
+      console.log(`Created window: ${windowInfo.id}`);
+      openSessionInWindow(session, windowInfo.id)
+    }
+    let newWindowPromise = browser.windows.create()
+    console.log({newWindowPromise})
+    newWindowPromise.then(onCreated, onError);
+  } else {
+    console.log("Unknown session type:", sessionType, ". session:", session)
+  }
 }
 
 /* Delete session by input session name */
@@ -187,6 +222,8 @@ function saveCurrentSession() {
   });
 }
 
+
+console.log("Initing tab sessions")
 // Asynchronous fetches
 fetchCurrentSession();
 fetchSavedSessions();
