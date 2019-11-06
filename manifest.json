@@ -17,5 +17,21 @@
     "default_icon": "icons/tab-sessions-96.png",
     "default_title": "Tab Sessions",
     "default_popup": "popup/choose_tab_session.html"
+  },
+
+  "sidebar_action": {
+    "default_title": "Tab Session",
+    "default_panel": "popup/choose_tab_session.html",
+    "default_icon": "icons/tab-sessions-96.png"
+  },
+
+  "commands": {
+    "_execute_sidebar_action": {
+      "suggested_key": {
+        "default": "Ctrl+Q",
+        "mac": "Alt+R",
+        "linux": "Alt+R"
+      }
+    }
   }
 }
